@@ -8,3 +8,10 @@ python:
 submodules:
   include: []
   recursive: false
+
+python:
+  setup_py_install: true
+  pip_install: true
+  extra_requirements:
+      - tests
+      - docs
