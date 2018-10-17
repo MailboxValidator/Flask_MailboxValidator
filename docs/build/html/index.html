@@ -1,0 +1,480 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MailboxValidator Flask Python Module &#8212; Flask_MailboxValidator 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/flask.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+  <script>DOCUMENTATION_OPTIONS.URL_ROOT = './';</script>
+   
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="#">Flask_MailboxValidator 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="mailboxvalidator-flask-python-module">
+<h1>MailboxValidator Flask Python Module<a class="headerlink" href="#mailboxvalidator-flask-python-module" title="Permalink to this headline">¶</a></h1>
+<p>This Flask Python module provides an easy way to call the
+MailboxValidator API which validates if an email address is a valid one.</p>
+<p>This module can be used in many types of projects such as:</p>
+<ul class="simple">
+<li>validating a user’s email during sign up</li>
+<li>cleaning your mailing list prior to an email marketing campaign</li>
+<li>a form of fraud check</li>
+</ul>
+</div>
+<div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>To install this module type the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">flask_MailboxValidator</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dependencies">
+<h1>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h1>
+<p>An API key is required for this module to function. Go to
+<a class="reference external" href="https://www.mailboxvalidator.com/plans#api">https://www.mailboxvalidator.com/plans#api</a> to sign up for FREE API plan
+and you’ll be given an API key.</p>
+<p>In order to use this module to validate email from form, WTForms and
+Flask-WTF need to be installed. Also, nose2 need to be installed in
+order to run the test file.</p>
+</div>
+<div class="section" id="usage-for-validate-email-from-form">
+<h1>Usage for validate email from form<a class="headerlink" href="#usage-for-validate-email-from-form" title="Permalink to this headline">¶</a></h1>
+<p><em>Note: WTForms and Flask-WTF must be installed before using this
+features.</em></p>
+<ol class="arabic simple">
+<li>Import Email Validation class from the package:
+<code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">flask_MailboxValidator.SingleValidation</span> <span class="pre">import</span> <span class="pre">EmailValidation</span></code></li>
+<li>Call the Email Validation in validator array along with your API key.
+<code class="docutils literal notranslate"><span class="pre">email</span> <span class="pre">=</span> <span class="pre">TextField('Email:',</span> <span class="pre">validators=[validators.required(),</span> <span class="pre">EmailValidation(apikey='Your_API_Key')])</span></code></li>
+</ol>
+</div>
+<div class="section" id="usage-for-validating-emails">
+<h1>Usage for validating emails<a class="headerlink" href="#usage-for-validating-emails" title="Permalink to this headline">¶</a></h1>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">flask_MailboxValidator</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">jsonify</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">mbv</span> <span class="o">=</span> <span class="n">flask_MailboxValidator</span><span class="o">.</span><span class="n">SingleValidation</span><span class="p">(</span><span class="s1">&#39;PASTE_API_KEY_HERE&#39;</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">mbv</span><span class="o">.</span><span class="n">ValidateEmail</span><span class="p">(</span><span class="s1">&#39;example@example.com&#39;</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">display_result</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">results</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;Error connecting to API.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;error_code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span><span class="p">(</span><span class="s1">&#39;error_message = &#39;</span> <span class="o">+</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;error_message&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="singlevalidation-api-key">
+<h2>SingleValidation(api_key)<a class="headerlink" href="#singlevalidation-api-key" title="Permalink to this headline">¶</a></h2>
+<p>Creates a new instance of the MailboxValidator object with the API key.</p>
+</div>
+<div class="section" id="validateemail-email-address">
+<h2>ValidateEmail(email_address)<a class="headerlink" href="#validateemail-email-address" title="Permalink to this headline">¶</a></h2>
+<p>Performs email validation on the supplied email address.</p>
+</div>
+</div>
+<div class="section" id="result-fields">
+<h1>Result Fields<a class="headerlink" href="#result-fields" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="email-address">
+<h2>email_address<a class="headerlink" href="#email-address" title="Permalink to this headline">¶</a></h2>
+<p>The input email address.</p>
+</div>
+<div class="section" id="domain">
+<h2>domain<a class="headerlink" href="#domain" title="Permalink to this headline">¶</a></h2>
+<p>The domain of the email address.</p>
+</div>
+<div class="section" id="is-free">
+<h2>is_free<a class="headerlink" href="#is-free" title="Permalink to this headline">¶</a></h2>
+<p>Whether the email address is from a free email provider like Gmail or
+Hotmail.</p>
+<p>Return values: True, False</p>
+</div>
+<div class="section" id="is-syntax">
+<h2>is_syntax<a class="headerlink" href="#is-syntax" title="Permalink to this headline">¶</a></h2>
+<p>Whether the email address is syntactically correct.</p>
+<p>Return values: True, False</p>
+</div>
+<div class="section" id="is-domain">
+<h2>is_domain<a class="headerlink" href="#is-domain" title="Permalink to this headline">¶</a></h2>
+<p>Whether the email address has a valid MX record in its DNS entries.</p>
+<p>Return values: True, False, -&nbsp;&nbsp;&nbsp;(- means not applicable)</p>
+</div>
+<div class="section" id="is-smtp">
+<h2>is_smtp<a class="headerlink" href="#is-smtp" title="Permalink to this headline">¶</a></h2>
+<p>Whether the mail servers specified in the MX records are responding to
+connections.</p>
+<p>Return values: True, False, -&nbsp;&nbsp;&nbsp;(- means not applicable)</p>
+</div>
+<div class="section" id="is-verified">
+<h2>is_verified<a class="headerlink" href="#is-verified" title="Permalink to this headline">¶</a></h2>
+<p>Whether the mail server confirms that the email address actually exist.</p>
+<p>Return values: True, False, -&nbsp;&nbsp;&nbsp;(- means not applicable)</p>
+</div>
+<div class="section" id="is-server-down">
+<h2>is_server_down<a class="headerlink" href="#is-server-down" title="Permalink to this headline">¶</a></h2>
+<p>Whether the mail server is currently down or unresponsive.</p>
+<p>Return values: True, False, -&nbsp;&nbsp;&nbsp;(- means not applicable)</p>
+</div>
+<div class="section" id="is-greylisted">
+<h2>is_greylisted<a class="headerlink" href="#is-greylisted" title="Permalink to this headline">¶</a></h2>
+<p>Whether the mail server employs greylisting where an email has to be
+sent a second time at a later time.</p>
+<p>Return values: True, False, -&nbsp;&nbsp;&nbsp;(- means not applicable)</p>
+</div>
+<div class="section" id="is-disposable">
+<h2>is_disposable<a class="headerlink" href="#is-disposable" title="Permalink to this headline">¶</a></h2>
+<p>Whether the email address is a temporary one from a disposable email
+provider.</p>
+<p>Return values: True, False, -&nbsp;&nbsp;&nbsp;(- means not applicable)</p>
+</div>
+<div class="section" id="is-suppressed">
+<h2>is_suppressed<a class="headerlink" href="#is-suppressed" title="Permalink to this headline">¶</a></h2>
+<p>Whether the email address is in our blacklist.</p>
+<p>Return values: True, False, -&nbsp;&nbsp;&nbsp;(- means not applicable)</p>
+</div>
+<div class="section" id="is-role">
+<h2>is_role<a class="headerlink" href="#is-role" title="Permalink to this headline">¶</a></h2>
+<p>Whether the email address is a role-based email address like
+<a class="reference external" href="mailto:admin&#37;&#52;&#48;example&#46;net">admin<span>&#64;</span>example<span>&#46;</span>net</a> or <a class="reference external" href="mailto:webmaster&#37;&#52;&#48;example&#46;net">webmaster<span>&#64;</span>example<span>&#46;</span>net</a>.</p>
+<p>Return values: True, False, -&nbsp;&nbsp;&nbsp;(- means not applicable)</p>
+</div>
+<div class="section" id="is-high-risk">
+<h2>is_high_risk<a class="headerlink" href="#is-high-risk" title="Permalink to this headline">¶</a></h2>
+<p>Whether the email address contains high risk keywords.</p>
+<p>Return values: True, False, -&nbsp;&nbsp;&nbsp;(- means not applicable)</p>
+</div>
+<div class="section" id="is-catchall">
+<h2>is_catchall<a class="headerlink" href="#is-catchall" title="Permalink to this headline">¶</a></h2>
+<p>Whether the email address is a catch-all address.</p>
+<p>Return values: True, False, Unknown, -&nbsp;&nbsp;&nbsp;(- means not applicable)</p>
+</div>
+<div class="section" id="mailboxvalidator-score">
+<h2>mailboxvalidator_score<a class="headerlink" href="#mailboxvalidator-score" title="Permalink to this headline">¶</a></h2>
+<p>Email address reputation score.</p>
+<p>Score &gt; 0.70 means good; score &gt; 0.40 means fair; score &lt;= 0.40 means
+poor.</p>
+</div>
+<div class="section" id="time-taken">
+<h2>time_taken<a class="headerlink" href="#time-taken" title="Permalink to this headline">¶</a></h2>
+<p>The time taken to get the results in seconds.</p>
+</div>
+<div class="section" id="status">
+<h2>status<a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
+<p>Whether our system think the email address is valid based on all the
+previous fields.</p>
+<p>Return values: True, False</p>
+</div>
+<div class="section" id="credits-available">
+<h2>credits_available<a class="headerlink" href="#credits-available" title="Permalink to this headline">¶</a></h2>
+<p>The number of credits left to perform validations.</p>
+</div>
+<div class="section" id="error-code">
+<h2>error_code<a class="headerlink" href="#error-code" title="Permalink to this headline">¶</a></h2>
+<p>The error code if there is any error. See error table below.</p>
+</div>
+<div class="section" id="error-message">
+<h2>error_message<a class="headerlink" href="#error-message" title="Permalink to this headline">¶</a></h2>
+<p>The error message if there is any error. See error table below.</p>
+</div>
+</div>
+<div class="section" id="usage-for-checking-if-an-email-is-from-a-disposable-email-provider">
+<h1>Usage for checking if an email is from a disposable email provider<a class="headerlink" href="#usage-for-checking-if-an-email-is-from-a-disposable-email-provider" title="Permalink to this headline">¶</a></h1>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">flask_MailboxValidator</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">jsonify</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">mbv</span> <span class="o">=</span> <span class="n">flask_MailboxValidator</span><span class="o">.</span><span class="n">SingleValidation</span><span class="p">(</span><span class="s1">&#39;PASTE_API_KEY_HERE&#39;</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">mbv</span><span class="o">.</span><span class="n">DisposableEmail</span><span class="p">(</span><span class="s1">&#39;example@example.com&#39;</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">display_result</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">results</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;Error connecting to API.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;error_code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span><span class="p">(</span><span class="s1">&#39;error_message = &#39;</span> <span class="o">+</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;error_message&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="functions-1">
+<span id="id1"></span><h1>Functions<a class="headerlink" href="#functions-1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="singlevalidationapi-key-1">
+<span id="id2"></span><h2>SingleValidation(api_key)<a class="headerlink" href="#singlevalidationapi-key-1" title="Permalink to this headline">¶</a></h2>
+<p>Creates a new instance of the MailboxValidator object with the API key.</p>
+</div>
+<div class="section" id="disposableemail-email-address">
+<h2>DisposableEmail(email_address)<a class="headerlink" href="#disposableemail-email-address" title="Permalink to this headline">¶</a></h2>
+<p>Check if the supplied email address is from a disposable email provider.</p>
+</div>
+</div>
+<div class="section" id="result-fields-1">
+<span id="id3"></span><h1>Result Fields<a class="headerlink" href="#result-fields-1" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="email-address-1">
+<span id="id4"></span><h2>email_address<a class="headerlink" href="#email-address-1" title="Permalink to this headline">¶</a></h2>
+<p>The input email address.</p>
+</div>
+<div class="section" id="is-disposable-1">
+<span id="id5"></span><h2>is_disposable<a class="headerlink" href="#is-disposable-1" title="Permalink to this headline">¶</a></h2>
+<p>Whether the email address is a temporary one from a disposable email
+provider.</p>
+<p>Return values: True, False</p>
+</div>
+<div class="section" id="credits-available-1">
+<span id="id6"></span><h2>credits_available<a class="headerlink" href="#credits-available-1" title="Permalink to this headline">¶</a></h2>
+<p>The number of credits left to perform validations.</p>
+</div>
+<div class="section" id="error-code-1">
+<span id="id7"></span><h2>error_code<a class="headerlink" href="#error-code-1" title="Permalink to this headline">¶</a></h2>
+<p>The error code if there is any error. See error table below.</p>
+</div>
+<div class="section" id="error-message-1">
+<span id="id8"></span><h2>error_message<a class="headerlink" href="#error-message-1" title="Permalink to this headline">¶</a></h2>
+<p>The error message if there is any error. See error table below.</p>
+</div>
+</div>
+<div class="section" id="usage-for-checking-if-an-email-is-from-a-free-email-provider">
+<h1>Usage for checking if an email is from a free email provider<a class="headerlink" href="#usage-for-checking-if-an-email-is-from-a-free-email-provider" title="Permalink to this headline">¶</a></h1>
+<div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">flask_MailboxValidator</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Flask</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">jsonify</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">mbv</span> <span class="o">=</span> <span class="n">flask_MailboxValidator</span><span class="o">.</span><span class="n">SingleValidation</span><span class="p">(</span><span class="s1">&#39;PASTE_API_KEY_HERE&#39;</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">mbv</span><span class="o">.</span><span class="n">FreeEmail</span><span class="p">(</span><span class="s1">&#39;example@example.com&#39;</span><span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">display_result</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">results</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;Error connecting to API.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;error_code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">jsonify</span><span class="p">(</span><span class="n">results</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span><span class="p">(</span><span class="s1">&#39;error_message = &#39;</span> <span class="o">+</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;error_message&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="functions-2">
+<span id="id9"></span><h1>Functions<a class="headerlink" href="#functions-2" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="singlevalidationapi-key-2">
+<span id="id10"></span><h2>SingleValidation(api_key)<a class="headerlink" href="#singlevalidationapi-key-2" title="Permalink to this headline">¶</a></h2>
+<p>Creates a new instance of the MailboxValidator object with the API key.</p>
+</div>
+<div class="section" id="freeemail-email-address">
+<h2>FreeEmail(email_address)<a class="headerlink" href="#freeemail-email-address" title="Permalink to this headline">¶</a></h2>
+<p>Check if the supplied email address is from a free email provider.</p>
+</div>
+</div>
+<div class="section" id="result-fields-2">
+<span id="id11"></span><h1>Result Fields<a class="headerlink" href="#result-fields-2" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="email-address-2">
+<span id="id12"></span><h2>email_address<a class="headerlink" href="#email-address-2" title="Permalink to this headline">¶</a></h2>
+<p>The input email address.</p>
+</div>
+<div class="section" id="is-free-1">
+<span id="id13"></span><h2>is_free<a class="headerlink" href="#is-free-1" title="Permalink to this headline">¶</a></h2>
+<p>Whether the email address is from a free email provider like Gmail or
+Hotmail.</p>
+<p>Return values: True, False</p>
+</div>
+<div class="section" id="credits-available-2">
+<span id="id14"></span><h2>credits_available<a class="headerlink" href="#credits-available-2" title="Permalink to this headline">¶</a></h2>
+<p>The number of credits left to perform validations.</p>
+</div>
+<div class="section" id="error-code-2">
+<span id="id15"></span><h2>error_code<a class="headerlink" href="#error-code-2" title="Permalink to this headline">¶</a></h2>
+<p>The error code if there is any error. See error table below.</p>
+</div>
+<div class="section" id="error-message-2">
+<span id="id16"></span><h2>error_message<a class="headerlink" href="#error-message-2" title="Permalink to this headline">¶</a></h2>
+<p>The error message if there is any error. See error table below.</p>
+</div>
+</div>
+<div class="section" id="test">
+<h1>Test<a class="headerlink" href="#test" title="Permalink to this headline">¶</a></h1>
+<p>To run the test file, you will first need to replace the
+‘PASTE_API_KEY_HERE’ with your API key in the test file(Located at test
+directory). After that, run this command in terminal:
+<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">test</span></code></p>
+</div>
+<div class="section" id="errors">
+<h1>Errors<a class="headerlink" href="#errors" title="Permalink to this headline">¶</a></h1>
+<table border="1" class="docutils">
+<colgroup>
+<col width="34%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">error_code</th>
+<th class="head">error_message</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>100</td>
+<td>Missing parameter.</td>
+</tr>
+<tr class="row-odd"><td>101</td>
+<td>API key not found.</td>
+</tr>
+<tr class="row-even"><td>102</td>
+<td>API key disabled.</td>
+</tr>
+<tr class="row-odd"><td>103</td>
+<td>API key expired.</td>
+</tr>
+<tr class="row-even"><td>104</td>
+<td>Insufficient credits.</td>
+</tr>
+<tr class="row-odd"><td>105</td>
+<td>Unknown error.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="copyright">
+<h1>Copyright<a class="headerlink" href="#copyright" title="Permalink to this headline">¶</a></h1>
+<p>Copyright (C) 2018 by MailboxValidator.com, <a class="reference external" href="mailto:support&#37;&#52;&#48;mailboxvalidator&#46;com">support<span>&#64;</span>mailboxvalidator<span>&#46;</span>com</a></p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+  <span id="sidebar-top"></span>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  
+    
+  
+
+  <h3>Contents</h3>
+  <ul>
+<li><a class="reference internal" href="#">MailboxValidator Flask Python Module</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li><a class="reference internal" href="#usage-for-validate-email-from-form">Usage for validate email from form</a></li>
+<li><a class="reference internal" href="#usage-for-validating-emails">Usage for validating emails</a></li>
+<li><a class="reference internal" href="#functions">Functions</a><ul>
+<li><a class="reference internal" href="#singlevalidation-api-key">SingleValidation(api_key)</a></li>
+<li><a class="reference internal" href="#validateemail-email-address">ValidateEmail(email_address)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#result-fields">Result Fields</a><ul>
+<li><a class="reference internal" href="#email-address">email_address</a></li>
+<li><a class="reference internal" href="#domain">domain</a></li>
+<li><a class="reference internal" href="#is-free">is_free</a></li>
+<li><a class="reference internal" href="#is-syntax">is_syntax</a></li>
+<li><a class="reference internal" href="#is-domain">is_domain</a></li>
+<li><a class="reference internal" href="#is-smtp">is_smtp</a></li>
+<li><a class="reference internal" href="#is-verified">is_verified</a></li>
+<li><a class="reference internal" href="#is-server-down">is_server_down</a></li>
+<li><a class="reference internal" href="#is-greylisted">is_greylisted</a></li>
+<li><a class="reference internal" href="#is-disposable">is_disposable</a></li>
+<li><a class="reference internal" href="#is-suppressed">is_suppressed</a></li>
+<li><a class="reference internal" href="#is-role">is_role</a></li>
+<li><a class="reference internal" href="#is-high-risk">is_high_risk</a></li>
+<li><a class="reference internal" href="#is-catchall">is_catchall</a></li>
+<li><a class="reference internal" href="#mailboxvalidator-score">mailboxvalidator_score</a></li>
+<li><a class="reference internal" href="#time-taken">time_taken</a></li>
+<li><a class="reference internal" href="#status">status</a></li>
+<li><a class="reference internal" href="#credits-available">credits_available</a></li>
+<li><a class="reference internal" href="#error-code">error_code</a></li>
+<li><a class="reference internal" href="#error-message">error_message</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage-for-checking-if-an-email-is-from-a-disposable-email-provider">Usage for checking if an email is from a disposable email provider</a></li>
+<li><a class="reference internal" href="#functions-1">Functions</a><ul>
+<li><a class="reference internal" href="#singlevalidationapi-key-1">SingleValidation(api_key)</a></li>
+<li><a class="reference internal" href="#disposableemail-email-address">DisposableEmail(email_address)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#result-fields-1">Result Fields</a><ul>
+<li><a class="reference internal" href="#email-address-1">email_address</a></li>
+<li><a class="reference internal" href="#is-disposable-1">is_disposable</a></li>
+<li><a class="reference internal" href="#credits-available-1">credits_available</a></li>
+<li><a class="reference internal" href="#error-code-1">error_code</a></li>
+<li><a class="reference internal" href="#error-message-1">error_message</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage-for-checking-if-an-email-is-from-a-free-email-provider">Usage for checking if an email is from a free email provider</a></li>
+<li><a class="reference internal" href="#functions-2">Functions</a><ul>
+<li><a class="reference internal" href="#singlevalidationapi-key-2">SingleValidation(api_key)</a></li>
+<li><a class="reference internal" href="#freeemail-email-address">FreeEmail(email_address)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#result-fields-2">Result Fields</a><ul>
+<li><a class="reference internal" href="#email-address-2">email_address</a></li>
+<li><a class="reference internal" href="#is-free-1">is_free</a></li>
+<li><a class="reference internal" href="#credits-available-2">credits_available</a></li>
+<li><a class="reference internal" href="#error-code-2">error_code</a></li>
+<li><a class="reference internal" href="#error-message-2">error_message</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#test">Test</a></li>
+<li><a class="reference internal" href="#errors">Errors</a></li>
+<li><a class="reference internal" href="#copyright">Copyright</a></li>
+</ul>
+<h3>Navigation</h3>
+<ul>
+  <li><a href="#">Overview</a>
+    
+  </li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, MailboxValidator.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+    </div>
+  </body>
+</html>
