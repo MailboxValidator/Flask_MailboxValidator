@@ -25,8 +25,15 @@ setuptools.setup(
 	install_requires=[
 		'Flask>=1.0.2',
 		'Flask-WTF>=0.14.2',
-		'nose2>=0.8.0',
+		# 'nose2>=0.8.0',
 		'WTForms>=2.2.1',
 	],
+	extras_require={
+		'tests': [
+			'nose2',],
+		'docs': [
+			'sphinx >= 1.8.1',
+			'Pallets-Sphinx-Themes']
+	},
 	test_suite='nose2.collector.collector',
 )
