@@ -117,7 +117,7 @@ class EmailValidation(object):
         else:
             print ('MBV Error:' + email_result['error_message'])
 
-class ValidateDisposable(object):
+class DisposableEmailValidation(object):
     # see http://flask.pocoo.org/docs/0.12/extensiondev/#the-extension-code
     def __init__(self, apikey, app=None, message=None):
         self.apikey = apikey
@@ -151,7 +151,7 @@ class ValidateDisposable(object):
         else:
             print ('MBV Error:' + email_result['error_message'])
 
-class ValidateFree(object):
+class FreeEmailValidation(object):
     # see http://flask.pocoo.org/docs/0.12/extensiondev/#the-extension-code
     def __init__(self, apikey, app=None, message=None):
         self.apikey = apikey
