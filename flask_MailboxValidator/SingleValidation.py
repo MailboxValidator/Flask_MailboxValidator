@@ -147,7 +147,7 @@ class DisposableEmailValidation(object):
         if email_result['is_disposable']:
             print ('is_disposable: ' + email_result['is_disposable'])
             if email_result['is_disposable'] == 'True':
-                raise ValidationError('Error: You should not use the disposable email from ' + email_result['domain'] + ' to register.')
+                raise ValidationError('Error: You should not use the disposable email from ' + email + ' to register.')
         else:
             print ('MBV Error:' + email_result['error_message'])
 
@@ -181,6 +181,6 @@ class FreeEmailValidation(object):
         if email_result['is_free']:
             print ('is_free: ' + email_result['is_free'])
             if email_result['is_free'] == 'True':
-                raise ValidationError('Error: You should not use the disposable email from ' + email_result['domain'] + ' to register.')
+                raise ValidationError('Error: You should not use the disposable email from ' + email + ' to register.')
         else:
             print ('MBV Error:' + email_result['error_message'])
