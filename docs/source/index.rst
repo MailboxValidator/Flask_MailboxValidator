@@ -36,9 +36,11 @@ Usage for validate email from form
 *Note: WTForms and Flask-WTF must be installed before using this
 features.*
 
-1. Import Email Validation class from the package:
+This Flask Python module had three different validator for different uses: EmailValidation for validating email address by all parameters, DisposableEmailValidation for validating disposable email address, and FreeEmailValidation for validating free email address.
+
+1. Import the validator class from the package. For example:
    ``from flask_MailboxValidator.SingleValidation import EmailValidation``
-2. Call the Email Validation in validator array along with your API key.
+2. Call the validator in validator array along with your API key. For example:
    ``email = TextField('Email:', validators=[validators.required(), EmailValidation(apikey='Your_API_Key')])``
 
 Usage for validating emails
