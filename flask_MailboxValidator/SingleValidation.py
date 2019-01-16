@@ -23,7 +23,7 @@ class SingleValidation:
             return None
 
     def DisposableEmail(self, email):
-        p = { 'key': self.apikey, 'format': 'json', 'email': email }
+        p = { 'key': self.apikey, 'format': 'json', 'email': email, 'source': 'flask' }
 
         try:
             conn = http.client.HTTPConnection("api.mailboxvalidator.com")
@@ -35,7 +35,7 @@ class SingleValidation:
             return None
 
     def FreeEmail(self, email):
-        p = { 'key': self.apikey, 'format': 'json', 'email': email }
+        p = { 'key': self.apikey, 'format': 'json', 'email': email, 'source': 'flask' }
 
         try:
             conn = http.client.HTTPConnection("api.mailboxvalidator.com")
@@ -114,5 +114,73 @@ class EmailValidation(object):
             print ('is_high_risk: ' + email_result['is_high_risk'])
             if email_result['is_high_risk'] == 'False':
                 raise ValidationError('Error: The email address do not have valid MX record in its DNS entries.')
+        else:
+            print ('MBV Error:' + email_result['error_message'])
+
+class ValidateDisposable(object):
+    # see http://flask.pocoo.org/docs/0.12/extensiondev/#the-extension-code
+    def __init__(self, apikey, app=None, message=None):
+        self.apikey = apikey
+        SingleValidation(self.apikey)
+        self.app = app
+        if app is not None:
+            self.init_app(app)
+        if not message:
+            message = 'Error: Email is not valid.'
+        self.message = message
+
+    def init_app(self, app):
+        # See http://flask.pocoo.org/docs/0.12/extensiondev/#the-extension-code
+        # Perform Class type checking
+        if not isinstance(app, Flask):
+            raise TypeError("flask_MailboxValidator.EmailValidation.init_app(): Parameter 'app' is an instance of class '%s' "
+                            "instead of a subclass of class 'flask.Flask'."
+                            % app.__class__.__name__)
+
+        # Bind Flask-User to app
+        app.user_manager = self
+
+    def __call__(self, form, field):
+        email = field.data
+        email_result = SingleValidation.DisposableEmail(self,email)
+        # check disposable
+        if email_result['is_disposable']:
+            print ('is_disposable: ' + email_result['is_disposable'])
+            if email_result['is_disposable'] == 'True':
+                raise ValidationError('Error: You should not use the disposable email from ' + email_result['domain'] + ' to register.')
+        else:
+            print ('MBV Error:' + email_result['error_message'])
+
+class ValidateFree(object):
+    # see http://flask.pocoo.org/docs/0.12/extensiondev/#the-extension-code
+    def __init__(self, apikey, app=None, message=None):
+        self.apikey = apikey
+        SingleValidation(self.apikey)
+        self.app = app
+        if app is not None:
+            self.init_app(app)
+        if not message:
+            message = 'Error: Email is not valid.'
+        self.message = message
+
+    def init_app(self, app):
+        # See http://flask.pocoo.org/docs/0.12/extensiondev/#the-extension-code
+        # Perform Class type checking
+        if not isinstance(app, Flask):
+            raise TypeError("flask_MailboxValidator.EmailValidation.init_app(): Parameter 'app' is an instance of class '%s' "
+                            "instead of a subclass of class 'flask.Flask'."
+                            % app.__class__.__name__)
+
+        # Bind Flask-User to app
+        app.user_manager = self
+
+    def __call__(self, form, field):
+        email = field.data
+        email_result = SingleValidation.FreeEmail(self,email)
+        # check free
+        if email_result['is_free']:
+            print ('is_free: ' + email_result['is_free'])
+            if email_result['is_free'] == 'True':
+                raise ValidationError('Error: You should not use the disposable email from ' + email_result['domain'] + ' to register.')
         else:
             print ('MBV Error:' + email_result['error_message'])
