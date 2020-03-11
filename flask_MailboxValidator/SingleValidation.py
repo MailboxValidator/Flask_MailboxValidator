@@ -11,7 +11,7 @@ class SingleValidation:
         self.apikey = apikey
 
     def ValidateEmail(self, email):
-        p = { 'key': self.apikey, 'format': 'json', 'email': email }
+        p = { 'key': self.apikey, 'format': 'json', 'email': email, 'source': 'flask' }
 
         try:
             conn = http.client.HTTPConnection("api.mailboxvalidator.com")
