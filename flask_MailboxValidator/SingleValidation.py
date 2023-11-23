@@ -15,7 +15,7 @@ class SingleValidation:
 
         try:
             conn = http.client.HTTPConnection("api.mailboxvalidator.com")
-            conn.request("GET", "/v1/validation/single?" + urllib.parse.urlencode(p))
+            conn.request("GET", "/v2/validation/single?" + urllib.parse.urlencode(p))
             res = conn.getresponse()
             # print res.read()
             return json.loads(res.read())
@@ -27,7 +27,7 @@ class SingleValidation:
 
         try:
             conn = http.client.HTTPConnection("api.mailboxvalidator.com")
-            conn.request("GET", "/v1/email/disposable?" + urllib.parse.urlencode(p))
+            conn.request("GET", "/v2/email/disposable?" + urllib.parse.urlencode(p))
             res = conn.getresponse()
             # print res.read()
             return json.loads(res.read())
@@ -39,7 +39,7 @@ class SingleValidation:
 
         try:
             conn = http.client.HTTPConnection("api.mailboxvalidator.com")
-            conn.request("GET", "/v1/email/free?" + urllib.parse.urlencode(p))
+            conn.request("GET", "/v2/email/free?" + urllib.parse.urlencode(p))
             res = conn.getresponse()
             # print res.read()
             return json.loads(res.read())
@@ -74,48 +74,50 @@ class EmailValidation(object):
     def __call__(self, form, field):
         email = field.data
         email_result = SingleValidation.ValidateEmail(self,email)
-        # check disposable
-        if email_result['is_disposable']:
-            print ('is_disposable: ' + email_result['is_disposable'])
-            if email_result['is_disposable'] == 'True':
-                raise ValidationError('Error: You should not use the disposable email from ' + email_result['domain'] + ' to register.')
-        # check email syntax
-        elif email_result['is_syntax']:
-            print ('is_syntax: ' + email_result['is_syntax'])
-            if email_result['is_syntax'] == 'False':
-                raise ValidationError('Error: You should enter email with valid syntax.')
-        # check email MX record
-        elif email_result['is_domain']:
-            print ('is_domain: ' + email_result['is_domain'])
-            if email_result['is_domain'] == 'False':
-                raise ValidationError('Error: The email address do not have valid MX record in its DNS entries.')
-        # check email server is respond to the server or not
-        elif email_result['is_smtp']:
-            print ('is_smtp: ' + email_result['is_smtp'])
-            if email_result['is_smtp'] == 'False':
-                raise ValidationError('Error: The email address do not have valid MX record in its DNS entries.')
-        # check email is actually exists or not:
-        elif email_result['is_verified']:
-            print ('is_verified: ' + email_result['is_verified'])
-            if email_result['is_verified'] == 'False':
-                raise ValidationError('Error: The email address do not have valid MX record in its DNS entries.')
-        # check if the email is blacklisted by MBV or not
-        elif email_result['is_suppressed']:
-            print ('is_suppressed: ' + email_result['is_suppressed'])
-            if email_result['is_suppressed'] == 'False':
-                raise ValidationError('Error: The email address do not have valid MX record in its DNS entries.')
-        # check whether the email is belongs to role based email or not
-        elif email_result['is_role']:
-            print ('is_role: ' + email_result['is_role'])
-            if email_result['is_role'] == 'False':
-                raise ValidationError('Error: The email address do not have valid MX record in its DNS entries.')
-        # check whether the email contains high risk keywords or not
-        elif email_result['is_high_risk']:
-            print ('is_high_risk: ' + email_result['is_high_risk'])
-            if email_result['is_high_risk'] == 'False':
-                raise ValidationError('Error: The email address do not have valid MX record in its DNS entries.')
+        
+        if 'error' not in results:
+            # check disposable
+            if email_result['is_disposable']:
+                # print ('is_disposable: ' + email_result['is_disposable'])
+                if email_result['is_disposable']:
+                    raise ValidationError('Error: You should not use the disposable email from ' + email_result['domain'] + ' to register.')
+            # check email syntax
+            elif email_result['is_syntax']:
+                # print ('is_syntax: ' + email_result['is_syntax'])
+                if email_result['is_syntax'] is False:
+                    raise ValidationError('Error: You should enter email with valid syntax.')
+            # check email MX record
+            elif email_result['is_domain']:
+                # print ('is_domain: ' + email_result['is_domain'])
+                if email_result['is_domain'] is False:
+                    raise ValidationError('Error: The email address do not have valid MX record in its DNS entries.')
+            # check email server is respond to the server or not
+            elif email_result['is_smtp']:
+                # print ('is_smtp: ' + email_result['is_smtp'])
+                if email_result['is_smtp'] is False:
+                    raise ValidationError('Error: The email server is not responding.')
+            # check email is actually exists or not:
+            elif email_result['is_verified']:
+                # print ('is_verified: ' + email_result['is_verified'])
+                if email_result['is_verified'] is False:
+                    raise ValidationError('Error: The email address appears to be non-exist.')
+            # check if the email is blacklisted by MBV or not
+            # elif email_result['is_suppressed']:
+                # print ('is_suppressed: ' + email_result['is_suppressed'])
+                # if email_result['is_suppressed']:
+                    # raise ValidationError('Error: The email address do not have valid MX record in its DNS entries.')
+            # check whether the email is belongs to role based email or not
+            # elif email_result['is_role']:
+                # print ('is_role: ' + email_result['is_role'])
+                # if email_result['is_role'] == 'False':
+                    # raise ValidationError('Error: The email address do not have valid MX record in its DNS entries.')
+            # check whether the email contains high risk keywords or not
+            elif email_result['is_high_risk']:
+                # print ('is_high_risk: ' + email_result['is_high_risk'])
+                if email_result['is_high_risk']:
+                    raise ValidationError('Error: The email address is high risked.')
         else:
-            print ('MBV Error:' + email_result['error_message'])
+            print ('MBV Error:' + email_result['error']['error_message'])
 
 class DisposableEmailValidation(object):
     # see http://flask.pocoo.org/docs/0.12/extensiondev/#the-extension-code
@@ -142,12 +144,14 @@ class DisposableEmailValidation(object):
 
     def __call__(self, form, field):
         email = field.data
-        email_result = SingleValidation.DisposableEmail(self,email)
-        # check disposable
-        if email_result['is_disposable']:
-            print ('is_disposable: ' + email_result['is_disposable'])
-            if email_result['is_disposable'] == 'True':
-                raise ValidationError('Error: You should not use the disposable email from ' + email + ' to register.')
+        email_result = SingleValidation.DisposableEmail(self,email
+        
+        if 'error' not in results:
+            # check disposable
+            if email_result['is_disposable']:
+                # print ('is_disposable: ' + email_result['is_disposable'])
+                if email_result['is_disposable']:
+                    raise ValidationError('Error: You should not use the disposable email ' + email + ' to register.')
         else:
             print ('MBV Error:' + email_result['error_message'])
 
@@ -177,10 +181,12 @@ class FreeEmailValidation(object):
     def __call__(self, form, field):
         email = field.data
         email_result = SingleValidation.FreeEmail(self,email)
-        # check free
-        if email_result['is_free']:
-            print ('is_free: ' + email_result['is_free'])
-            if email_result['is_free'] == 'True':
-                raise ValidationError('Error: You should not use the disposable email from ' + email + ' to register.')
+        
+        if 'error' not in results:
+            # check free
+            if email_result['is_free']:
+                # print ('is_free: ' + email_result['is_free'])
+                if email_result['is_free']:
+                    raise ValidationError('Error: You should not use the free email ' + email + ' to register.')
         else:
             print ('MBV Error:' + email_result['error_message'])
