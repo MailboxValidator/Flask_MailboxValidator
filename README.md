@@ -103,7 +103,7 @@ Check if the supplied email address is from a free email provider.
 This Flask Python module had three different validator for different uses: EmailValidation for validating email address by all parameters, DisposableEmailValidation for validating disposable email address, and FreeEmailValidation for validating free email address.
 
 1. Import the validator class from the package. For example: `from flask_MailboxValidator.SingleValidation import EmailValidation`
-2. Call the validator in validator array along with your API key. For example: `email = TextField('Email:', validators=[validators.InputRequired(), EmailValidation(apikey='Your_API_Key')])`
+2. Call the validator in validator array along with your API key. For example: `email = StringField('Email:', validators=[validators.InputRequired(), EmailValidation(apikey='Your_API_Key')])`
 
 
 Sample Codes
