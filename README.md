@@ -103,8 +103,7 @@ Check if the supplied email address is from a free email provider.
 This Flask Python module had three different validator for different uses: EmailValidation for validating email address by all parameters, DisposableEmailValidation for validating disposable email address, and FreeEmailValidation for validating free email address.
 
 1. Import the validator class from the package. For example: `from flask_MailboxValidator.SingleValidation import EmailValidation`
-2. Call the validator in validator array along with your API key. For example: `email = TextField('Email:', validators=[validators.required(), EmailValidation(apikey='Your_API_Key')])`
-
+2. Call the validator in validator array along with your API key. For example: `email = TextField('Email:', validators=[validators.InputRequired(), EmailValidation(apikey='Your_API_Key')])`
 
 
 Sample Codes
@@ -126,10 +125,10 @@ results = mbv.ValidateEmail('example@example.com')
 def display_result():
 	if results is None:
 		return("Error connecting to API.\n")
-	elif results['error_code'] == '':
+	elif 'error' not in results:
 		return (jsonify(results))
 	else:
-		return('error_message = ' + results['error_message'] + "\n")
+		return('error_message = ' + results['error']['error_message'] + "\n")
 ```
 
 
@@ -150,10 +149,10 @@ results = mbv.DisposableEmail('example@example.com')
 def display_result():
 	if results is None:
 		return("Error connecting to API.\n")
-	elif results['error_code'] == '':
+	elif 'error' not in results:
 		return (jsonify(results))
 	else:
-		return('error_message = ' + results['error_message'] + "\n")
+		return('error_message = ' + results['error']['error_message'] + "\n")
 ```
 
 
@@ -174,19 +173,15 @@ results = mbv.FreeEmail('example@example.com')
 def display_result():
 	if results is None:
 		return("Error connecting to API.\n")
-	elif results['error_code'] == '':
+	elif 'error' not in results:
 		return (jsonify(results))
 	else:
-		return('error_message = ' + results['error_message'] + "\n")
+		return('error_message = ' + results['error']['error_message'] + "\n")
 ```
-
-
 
 # Test
 
 To run the test file, you will first need to replace the 'PASTE_API_KEY_HERE' with your API key in the test file(Located at test directory). After that, run this command in terminal: `python setup.py test`
-
-
 
 
 Errors
@@ -194,14 +189,14 @@ Errors
 
 | error_code | error_message |
 | ---------- | ------------- |
-| 100 | Missing parameter. |
-| 101 | API key not found. |
-| 102 | API key disabled. |
-| 103 | API key expired. |
-| 104 | Insufficient credits. |
-| 105 | Unknown error. |
+| 10000 | Missing parameter. |
+| 10001 | API key not found. |
+| 10002 | API key disabled. |
+| 10003 | API key expired. |
+| 10004 | Insufficient credits. |
+| 10005 | Unknown error. |
 
 Copyright
 =========
 
-Copyright (C) 2018-2020 by MailboxValidator.com, support@mailboxvalidator.com
+Copyright (C) 2018-2023 by MailboxValidator.com, support@mailboxvalidator.com

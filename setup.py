@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
 	name="flask_MailboxValidator",
-	version="1.2.0",
+	version="1.3.0",
 	author="MailboxValidator.com",
 	author_email="support@mailboxvalidator.com",
 	description="Email verification module for Flask using MailboxValidator API. It validates if the email is valid, from a free provider, contains high-risk keywords, whether it\'s a catch-all address and so much more.",
@@ -24,9 +24,9 @@ setuptools.setup(
 	),
 	zip_safe=False,
 	install_requires=[
-		'Flask>=1.0.2',
-		'Flask-WTF>=0.14.2',
-		'WTForms>=2.2.1',
+		'Flask>=3.0.0',
+		'Flask-WTF>=1.0.0',
+		'WTForms>=3.3.0',
 	],
 	extras_require={
 		'tests': [
